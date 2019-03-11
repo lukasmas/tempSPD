@@ -15,14 +15,22 @@ namespace SPD
         public int maszyny { get; set; } // ilość maszyn
         public int zadania { get; set; } // ilość zadań
         public int[,] czasy { get; set; }
+        public int[,] prez_wy { get; set; }
+        List<string> permutacje = new List<string>();
+        public int cMin { get; set; }
+        public string bestOpt { get; set; }
+
 
         public List<Task> tasksList= new List<Task>();
+
+
         public List<Task> Johnson()
         {
             List<Task> wirtualneZadania = new List<Task>();
             List<Task> lista1 = new List<Task>();
             List<Task> lista2 = new List<Task>();
             List<Task> listaostateczna = new List<Task>();
+
             int count = 0;
             if (maszyny == 3)
             {
@@ -142,13 +150,13 @@ namespace SPD
             
 
         }
-        
-            public DanePlik(string nazwa_plik, int h, int w, int [,] vs)
-        {   
+
+        public DanePlik(string nazwa_plik, int h, int w, int[,] vs)
+        {
             nazwa = nazwa_plik;
             maszyny = w;
             zadania = h;
-            
+
             czasy = new int[zadania, maszyny];
             for (int i = 0; i < h; i++)
             {
@@ -157,21 +165,129 @@ namespace SPD
                     czasy[i, j] = vs[i, j];
                 }
             }
-            if (maszyny==3)
-            for (int i = 0; i < h; i++)
-            {
-                tasksList.Add(new Task(i,vs[i,0],vs[i,1],vs[i,2]));
-            }
-            if (maszyny==2)
+            if (maszyny == 3)
                 for (int i = 0; i < h; i++)
                 {
-                tasksList.Add(new Task(i, vs[i, 0], vs[i, 1]));
-            }
+                    tasksList.Add(new Task(i, vs[i, 0], vs[i, 1], vs[i, 2]));
+                }
+            if (maszyny == 2)
+                for (int i = 0; i < h; i++)
+                {
+                    tasksList.Add(new Task(i, vs[i, 0], vs[i, 1]));
+                }
 
 
         }
-       
+
+        public void Permutacja()
+        {
+            // our sequence of characters
+            char[] temp = new char[zadania];
+            for (int i = 0; i < zadania; i++)
+            {
+                temp[i] = (char)i;
+            }
+            string sequence = new string(temp);
+
+            // variables aiding us in char[] <-> string conversion
+            int n = sequence.Length;
+            char[] chars = new char[n];
+            string permutation;
+
+            // variables necessary for our algorithm
+            int[] positions = new int[n];
+            bool[] used = new bool[n];
+            bool last;
+
+            // initialize positions
+            for (int i = 0; i < n; i++)
+                positions[i] = i;
+
+            do
+            {
+                // make permutation according to positions
+                for (int i = 0; i < n; i++)
+                    chars[i] = sequence[positions[i]];
+                permutation = new string(chars);
+
+                // output it
+               // Console.WriteLine(permutation);
+                permutacje.Add(permutation);
+
+                // recalculate positions
+                last = false;
+                int k = n - 2;
+                while (k >= 0)
+                {
+                    if (positions[k] < positions[k + 1])
+                    {
+                        for (int i = 0; i < n; i++)
+                            used[i] = false;
+                        for (int i = 0; i < k; i++)
+                            used[positions[i]] = true;
+                        do positions[k]++; while (used[positions[k]]);
+                        used[positions[k]] = true;
+                        for (int i = 0; i < n; i++)
+                            if (!used[i]) positions[++k] = i;
+                        break;
+                    }
+                    else k--;
+                }
+                last = (k < 0);
+            } while (!last);
+        }
+
+        public int Czas(int [,] arr)
+        {
+            int[,] temp = arr;
+            int t_czas;
+
+            int[] t_zwolnienia = new int[maszyny];
 
 
+
+            for (int z = 0; z < zadania; z++)
+            {
+                t_czas = 0;
+
+
+                for (int i = 0; i < maszyny; i++)
+                {
+
+
+                    t_czas = (temp[z, i]);
+
+
+
+
+                    int t_czas2 = t_czas;
+
+
+
+
+                    if (i == 0)
+                    {
+                        t_zwolnienia[i] += t_czas2;
+                    }
+                    else
+                    {
+                        if (t_zwolnienia[i] >= t_zwolnienia[i - 1])
+                            t_zwolnienia[i] += (t_czas2);
+                        else
+                            t_zwolnienia[i] = t_zwolnienia[i - 1] + (t_czas2);
+                    }
+
+
+
+                }
+            }
+            int cmax;
+            cmax = (t_zwolnienia[maszyny - 1]);
+            return cmax;
+            //xd.Text = (t_zwolnienia[temp.maszyny - 1] / 20).ToString();
+        }
     }
+
+
 }
+

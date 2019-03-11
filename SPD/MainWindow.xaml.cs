@@ -97,6 +97,7 @@ namespace SPD
             {
                 StreamReader sr = new StreamReader(dane);
                 int indeks = 0;
+                danePliks.Clear();
 
 
                 while (!sr.EndOfStream)
@@ -174,7 +175,8 @@ namespace SPD
             UseData();
             FillCombo();
             
-            
+
+
         }
 
         private void FillCombo()
@@ -308,15 +310,17 @@ namespace SPD
         {
 
             Draw123();
+            kupa.Text = FunkcjaLiczacaCzas();
             //xd.Text = combo1.SelectedValue.ToString();
         }
+
 
         private void Rysuj(object sender, RoutedEventArgs e)
         {
             //Draw123();
             canvas.Children.Clear();
             Siatka();
-            kupa.Text = FunkcjaLiczacaCzas();
+            //kupa.Text = FunkcjaLiczacaCzas();
             // danePliks[0].Johnson();
            
         }
