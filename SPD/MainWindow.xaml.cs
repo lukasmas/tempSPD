@@ -189,7 +189,7 @@ namespace SPD
             combo1.Items.Clear();
             if (dane != null && danePliks.Count > 0)
             {
-                xd.Text = danePliks[0].nazwa;
+               // xd.Text = danePliks[0].nazwa;
                 //danePliks[0].Draw123();
                 foreach (var item in danePliks)
                 {
@@ -204,7 +204,7 @@ namespace SPD
         public void Draw123()
         {
 
-            DanePlik temp = danePliks[0];
+            //DanePlik temp = danePliks[0];
             int t_czas;
 
             int[] t_zwolnienia = new int[temp.maszyny];
@@ -340,63 +340,75 @@ namespace SPD
             temp = null;
             foreach (var item in danePliks)
             {
-                if(item.nazwa == combo1.SelectedValue.ToString())
+                try
                 {
-                    temp = item;
+                    if (item.nazwa == combo1.SelectedValue.ToString())
+                    {
+                        temp = item;
+                    }
+                }
+                catch
+                {
+
                 }
             }
+            if (temp == null)
+                if (danePliks.Count > 0)
+                    temp= danePliks[0];
 
-            co = 0;
-            Draw123();
+            Clear(0);
             //kupa.Text = FunkcjaLiczacaCzas();
-            
+
         }
 
+        private void Clear(int x = -1)
+        {
+            canvas.Children.Clear();
+            Siatka();
+            if (x != -1)
+            {
+                co = x;
+                Draw123();
+            }
+        }
 
         private void Rysuj(object sender, RoutedEventArgs e)
         {
-            
-            canvas.Children.Clear();
-            Siatka();
+
+            Clear();
             
         }
         public string FunkcjaLiczacaCzas()
         {
-            return danePliks[0].Czas(danePliks[0].JohnsonNaSztywno()).ToString();
+            return temp.Czas(temp.JohnsonNaSztywno()).ToString();
+            //return danePliks[0].Czas(danePliks[0].JohnsonNaSztywno()).ToString();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            DanePlik temp = danePliks[0];
-            temp.Permutacja();
-            temp.PermutacjaCzas();
-            
-            kupa.Text = "";
-            for (int i = 0; i < temp.permutacje.Count; i++)
+            //DanePlik temp = danePliks[0];
+            if (temp.bestOpt == null)
             {
-                kupa.Text += temp.permutacje[i] + " : " + temp.czasy_permutacje[i].ToString() + " \n";
-            }
+                temp.Permutacja();
+                temp.PermutacjaCzas();
 
-            co = 2;
-            canvas.Children.Clear();
-            Siatka();
-            Draw123();
+                kupa.Text = "";
+                for (int i = 0; i < temp.permutacje.Count; i++)
+                {
+                    kupa.Text += temp.permutacje[i] + " : " + temp.czasy_permutacje[i].ToString() + " \n";
+                }
+            }
+            Clear(2);
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            co = 1;
-            canvas.Children.Clear();
-            Siatka();
-            Draw123();
+            Clear(1);
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            co = 0;
-            canvas.Children.Clear();
-            Siatka();
-            Draw123();
+            Clear(0);
         }
     }
 
