@@ -25,6 +25,8 @@ namespace SPD
     {
         FileStream dane;
         List<DanePlik> danePliks = new List<DanePlik>();
+        DanePlik temp;
+        int co;
         
         public System.Windows.ShutdownMode ShutdownMode { get; set; }
 
@@ -33,7 +35,7 @@ namespace SPD
             InitializeComponent();
             ShutdownMode = ShutdownMode.OnMainWindowClose;
             Siatka();
-
+            co = 0;
 
 
         }
@@ -78,8 +80,11 @@ namespace SPD
 
         public void LoadData()
         {
-
+            co = 0;
             danePliks.Clear();
+
+
+
             OpenFileDialog openDialog = new OpenFileDialog();
 
             if (openDialog.ShowDialog() == true)
@@ -181,6 +186,7 @@ namespace SPD
 
         private void FillCombo()
         {
+            combo1.Items.Clear();
             if (dane != null && danePliks.Count > 0)
             {
                 xd.Text = danePliks[0].nazwa;
@@ -193,14 +199,6 @@ namespace SPD
                 combo1.SelectedIndex = 0;
 
             }
-
-            else
-            {
-                combo1.Items.Clear();
-                xd.Text = "";
-                
-            }
-        
         }
 
         public void Draw123()
@@ -221,6 +219,7 @@ namespace SPD
             {
                 t_czas = 0;
                 int mv = 0;
+                string numer = "";
                 r = (byte)rnd.Next(255);
                 g = (byte)rnd.Next(255);
                 b = (byte)rnd.Next(255);
@@ -228,8 +227,36 @@ namespace SPD
                 for (int i = 0; i < temp.maszyny; i++)
                 {
 
-                   
-                    t_czas = (temp.JohnsonNaSztywno()[z, i]);
+                    switch (co)
+                    {
+                        case 0:
+                            {
+                                t_czas = (temp.czasy[z, i]);
+                                numer = (z+1).ToString();
+                                break;
+                            }
+
+                        case 1:
+                            {
+                                t_czas = (temp.JohnsonNaSztywno()[z, i]);
+                                numer = temp.bestOptJ[z].ToString();
+                                break;
+                            }
+
+                        case 2:
+                            {
+                                t_czas = (temp.prez_wy[z, i]);
+                                numer = temp.bestOpt[z].ToString();
+                                break;
+                            }
+                        default:
+                            {
+                                t_czas = (temp.czasy[z, i]);
+                                numer = (z + 1).ToString();
+                                break;
+                            }
+                    }
+                    
                     
                     
                     
@@ -264,10 +291,12 @@ namespace SPD
 
                     }
 
+                    
 
                     Label lab = new Label()
                     {
-                        Content = (z + 1).ToString(),
+                        
+                        Content = numer,
 
                         FontSize = 20,
                         Foreground = new SolidColorBrush(Color.FromRgb((byte)(255 - r), (byte)(255 - g), (byte)(255 - b))),
@@ -308,21 +337,28 @@ namespace SPD
 
         private void combo1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            temp = null;
+            foreach (var item in danePliks)
+            {
+                if(item.nazwa == combo1.SelectedValue.ToString())
+                {
+                    temp = item;
+                }
+            }
 
+            co = 0;
             Draw123();
-            kupa.Text = FunkcjaLiczacaCzas();
-            //xd.Text = combo1.SelectedValue.ToString();
+            //kupa.Text = FunkcjaLiczacaCzas();
+            
         }
 
 
         private void Rysuj(object sender, RoutedEventArgs e)
         {
-            //Draw123();
+            
             canvas.Children.Clear();
             Siatka();
-            //kupa.Text = FunkcjaLiczacaCzas();
-            // danePliks[0].Johnson();
-           
+            
         }
         public string FunkcjaLiczacaCzas()
         {
@@ -340,6 +376,27 @@ namespace SPD
             {
                 kupa.Text += temp.permutacje[i] + " : " + temp.czasy_permutacje[i].ToString() + " \n";
             }
+
+            co = 2;
+            canvas.Children.Clear();
+            Siatka();
+            Draw123();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            co = 1;
+            canvas.Children.Clear();
+            Siatka();
+            Draw123();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            co = 0;
+            canvas.Children.Clear();
+            Siatka();
+            Draw123();
         }
     }
 

@@ -20,6 +20,7 @@ namespace SPD
         public List<int> czasy_permutacje = new List<int>();
         public int cMin { get; set; }
         public string bestOpt { get; set; }
+        public string bestOptJ { get; set; }
 
 
         public List<Task> tasksList= new List<Task>();
@@ -55,8 +56,8 @@ namespace SPD
                 {
 
                 count = 0;
-            int min1=999999; //daj na koniec listy 1
-            int min2 = 999999; //2 czas najmniejszy na poczatek lisy 2
+                int min1=999999; //daj na koniec listy 1
+                int min2 = 999999; //2 czas najmniejszy na poczatek lisy 2
                 Task taskMin1=wirtualneZadania[0];
                 Task taskMin2=wirtualneZadania[0];
                 foreach (Task element in wirtualneZadania)
@@ -113,6 +114,7 @@ namespace SPD
         public int[,] ListMadeOfTable(List<Task> tasklist)
         {
             int dlugosc = tasklist.Count();
+            
             int count = 0;
             if (maszyny == 3)
             {
@@ -122,9 +124,12 @@ namespace SPD
                     tablica[count, 0] = element.machineTime1;
                     tablica[count, 1] = element.machineTime2;
                     tablica[count, 2] = element.machineTime3;
-
+                    bestOptJ += (element.id+1).ToString();
                     count++;
                 }
+
+                
+
                 return tablica;
             }
             else 
@@ -134,11 +139,11 @@ namespace SPD
                 {
                     tablica[count, 0] = element.machineTime1;
                     tablica[count, 1] = element.machineTime2;
-                    
+                    bestOptJ += (element.id + 1).ToString();
 
                     count++;
                 }
-
+                
                 return tablica;
 
             }
