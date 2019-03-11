@@ -16,7 +16,8 @@ namespace SPD
         public int zadania { get; set; } // ilość zadań
         public int[,] czasy { get; set; }
         public int[,] prez_wy { get; set; }
-        List<string> permutacje = new List<string>();
+        public List<string> permutacje = new List<string>();
+        public List<int> czasy_permutacje = new List<int>();
         public int cMin { get; set; }
         public string bestOpt { get; set; }
 
@@ -156,6 +157,7 @@ namespace SPD
             nazwa = nazwa_plik;
             maszyny = w;
             zadania = h;
+            cMin = 999999;
 
             czasy = new int[zadania, maszyny];
             for (int i = 0; i < h; i++)
@@ -181,13 +183,14 @@ namespace SPD
 
         public void Permutacja()
         {
+
             // our sequence of characters
-            char[] temp = new char[zadania];
+            string temp = "";
             for (int i = 0; i < zadania; i++)
             {
-                temp[i] = (char)i;
+                temp += (i+1).ToString();
             }
-            string sequence = new string(temp);
+            string sequence = temp;
 
             // variables aiding us in char[] <-> string conversion
             int n = sequence.Length;
@@ -207,7 +210,9 @@ namespace SPD
             {
                 // make permutation according to positions
                 for (int i = 0; i < n; i++)
+                {
                     chars[i] = sequence[positions[i]];
+                }
                 permutation = new string(chars);
 
                 // output it
@@ -236,6 +241,8 @@ namespace SPD
                 last = (k < 0);
             } while (!last);
         }
+
+
 
         public int Czas(int [,] arr)
         {
@@ -286,8 +293,39 @@ namespace SPD
             return cmax;
             //xd.Text = (t_zwolnienia[temp.maszyny - 1] / 20).ToString();
         }
+
+        public void PermutacjaCzas()
+        {
+            
+            foreach (var item in permutacje)
+            {
+                int[,] temp = new int[zadania, maszyny];
+
+                string klucz = item;
+                for (int i = 0; i < zadania; i++)
+                {   
+
+                    int x = (int)klucz[i] - 49; // 1 w kod ascii = 49
+                    for (int j = 0; j < maszyny; j++)
+                    {
+                        temp[i, j] = czasy[x, j];
+                    }
+                }
+
+                int t_czas = Czas(temp);
+                czasy_permutacje.Add(t_czas);
+                if (t_czas < cMin)
+                {
+                    cMin = t_czas;
+                    bestOpt = item;
+                    prez_wy = temp;
+                }
+               
+            }
+            
+        }
+
     }
-
-
+    
 }
 

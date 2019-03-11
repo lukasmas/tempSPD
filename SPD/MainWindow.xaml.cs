@@ -329,6 +329,18 @@ namespace SPD
             return danePliks[0].Czas(danePliks[0].JohnsonNaSztywno()).ToString();
         }
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            DanePlik temp = danePliks[0];
+            temp.Permutacja();
+            temp.PermutacjaCzas();
+            
+            kupa.Text = "";
+            for (int i = 0; i < temp.permutacje.Count; i++)
+            {
+                kupa.Text += temp.permutacje[i] + " : " + temp.czasy_permutacje[i].ToString() + " \n";
+            }
+        }
     }
 
         
