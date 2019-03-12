@@ -27,6 +27,7 @@ namespace SPD
         List<DanePlik> danePliks = new List<DanePlik>();
         DanePlik temp;
         int co;
+        double width;
         
         public System.Windows.ShutdownMode ShutdownMode { get; set; }
 
@@ -34,9 +35,10 @@ namespace SPD
         {
             InitializeComponent();
             ShutdownMode = ShutdownMode.OnMainWindowClose;
+            width = okno.Width;
             Siatka();
             co = 0;
-
+            
 
         }
 
@@ -44,7 +46,7 @@ namespace SPD
         {
             for (int i = 0; i < 30; i++)
             {
-                for (int j = 0; j < 1280 / 20; j++)
+                for (int j = 0; j < width / 20; j++)
                 {
                     Rectangle rec = new Rectangle()
                     {
@@ -409,6 +411,19 @@ namespace SPD
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             Clear(0);
+        }
+
+        private void okno_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(Math.Abs(okno.Width - width) > 100)
+            {
+                width = okno.Width;
+                Clear();
+                if (temp != null)
+                    Draw123();
+
+            }
+
         }
     }
 
