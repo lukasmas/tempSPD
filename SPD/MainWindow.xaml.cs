@@ -41,7 +41,7 @@ namespace SPD
             width = okno.Width;
             sekunda = 20; //px
             f_size = (12 * sekunda) / 20;
-            
+            temp = null;
             Siatka();
             co = 0;
             
@@ -106,7 +106,7 @@ namespace SPD
             co = 0;
             danePliks.Clear();
 
-
+            dane = null;
 
             OpenFileDialog openDialog = new OpenFileDialog();
 
@@ -225,7 +225,7 @@ namespace SPD
 
         public void Draw123()
         {
-
+            
             //DanePlik temp = danePliks[0];
             int t_czas;
 
@@ -376,7 +376,7 @@ namespace SPD
 
         private void combo1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            temp = null;
+           // temp = null;
             foreach (var item in danePliks)
             {
                 try
@@ -469,7 +469,7 @@ namespace SPD
             Random rnd = new Random();
 
             int max_maszyn = 3;
-            int max_zadan = 5;
+            int max_zadan = 6;
             int max_time = 15;
             int indeks = 0;
 

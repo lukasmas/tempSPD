@@ -190,39 +190,37 @@ namespace SPD
         public void Permutacja()
         {
 
-            // our sequence of characters
+            
             string temp = "";
             for (int i = 0; i < zadania; i++)
             {
                 temp += (i+1).ToString();
             }
-            string sequence = temp;
+            string sekwencja = temp;
 
-            // variables aiding us in char[] <-> string conversion
-            int n = sequence.Length;
+            
+            int n = sekwencja.Length;
             char[] chars = new char[n];
             string permutation;
 
-            // variables necessary for our algorithm
-            int[] positions = new int[n];
+            
+            int[] pozycja = new int[n];
             bool[] used = new bool[n];
             bool last;
 
-            // initialize positions
+            
             for (int i = 0; i < n; i++)
-                positions[i] = i;
+                pozycja[i] = i;
 
             do
             {
-                // make permutation according to positions
+                
                 for (int i = 0; i < n; i++)
                 {
-                    chars[i] = sequence[positions[i]];
+                    chars[i] = sekwencja[pozycja[i]];
                 }
                 permutation = new string(chars);
-
-                // output it
-               // Console.WriteLine(permutation);
+                
                 permutacje.Add(permutation);
 
                 // recalculate positions
@@ -230,16 +228,16 @@ namespace SPD
                 int k = n - 2;
                 while (k >= 0)
                 {
-                    if (positions[k] < positions[k + 1])
+                    if (pozycja[k] < pozycja[k + 1])
                     {
                         for (int i = 0; i < n; i++)
                             used[i] = false;
                         for (int i = 0; i < k; i++)
-                            used[positions[i]] = true;
-                        do positions[k]++; while (used[positions[k]]);
-                        used[positions[k]] = true;
+                            used[pozycja[i]] = true;
+                        do pozycja[k]++; while (used[pozycja[k]]);
+                        used[pozycja[k]] = true;
                         for (int i = 0; i < n; i++)
-                            if (!used[i]) positions[++k] = i;
+                            if (!used[i]) pozycja[++k] = i;
                         break;
                     }
                     else k--;
@@ -273,21 +271,21 @@ namespace SPD
 
 
 
-                    int t_czas2 = t_czas;
+                    //int t_czas2 = t_czas;
 
 
 
 
                     if (i == 0)
                     {
-                        t_zwolnienia[i] += t_czas2;
+                        t_zwolnienia[i] += t_czas;
                     }
                     else
                     {
                         if (t_zwolnienia[i] >= t_zwolnienia[i - 1])
-                            t_zwolnienia[i] += (t_czas2);
+                            t_zwolnienia[i] += (t_czas);
                         else
-                            t_zwolnienia[i] = t_zwolnienia[i - 1] + (t_czas2);
+                            t_zwolnienia[i] = t_zwolnienia[i - 1] + (t_czas);
                     }
 
 
