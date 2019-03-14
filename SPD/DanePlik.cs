@@ -244,6 +244,7 @@ namespace SPD
                 }
                 last = (k < 0);
             } while (!last);
+           
         }
 
 
@@ -268,14 +269,7 @@ namespace SPD
 
                     t_czas = (temp[z, i]);
 
-
-
-
-                    //int t_czas2 = t_czas;
-
-
-
-
+                   
                     if (i == 0)
                     {
                         t_zwolnienia[i] += t_czas;
@@ -295,7 +289,7 @@ namespace SPD
             int cmax;
             cmax = (t_zwolnienia[maszyny - 1]);
             return cmax;
-            //xd.Text = (t_zwolnienia[temp.maszyny - 1] / 20).ToString();
+            
         }
 
         public void PermutacjaCzas()
@@ -328,7 +322,7 @@ namespace SPD
             }
             
         }
-
+        
     }
     
 }

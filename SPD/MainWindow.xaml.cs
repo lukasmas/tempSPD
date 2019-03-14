@@ -428,8 +428,10 @@ namespace SPD
             //DanePlik temp = danePliks[0];
             if (temp.bestOpt == null)
             {
+
                 temp.Permutacja();
                 temp.PermutacjaCzas();
+
 
                 kupa.Text = "";
                 for (int i = 0; i < temp.permutacje.Count; i++)
