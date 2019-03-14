@@ -28,6 +28,9 @@ namespace SPD
         DanePlik temp;
         int co;
         double width;
+        int sekunda;
+        double f_size;
+       
         
         public System.Windows.ShutdownMode ShutdownMode { get; set; }
 
@@ -36,21 +39,38 @@ namespace SPD
             InitializeComponent();
             ShutdownMode = ShutdownMode.OnMainWindowClose;
             width = okno.Width;
+            sekunda = 20; //px
+            f_size = (12 * sekunda) / 20;
+            
             Siatka();
             co = 0;
             
-
+            
         }
+       
 
         private void Siatka()
         {
+             
+            if(temp != null)
+            {
+                int temp_s = temp.Czas(temp.czasy);
+                if (temp_s > 60)
+                {
+                    sekunda = (int)(20*60)/temp_s;
+                    if (sekunda == 0)
+                        sekunda = 1;
+                }
+                else
+                    sekunda = 20;
+            }
             for (int i = 0; i < 30; i++)
             {
-                for (int j = 0; j < width / 20; j++)
+                for (int j = 0; j < width / sekunda; j++)
                 {
                     Rectangle rec = new Rectangle()
                     {
-                        Width = 20,
+                        Width = sekunda,
                         Height = 20,
                         Fill = Brushes.White,
                         Stroke = Brushes.Black,
@@ -59,23 +79,24 @@ namespace SPD
 
                     canvas.Children.Add(rec);
                     Canvas.SetTop(rec, i * 20);
-                    Canvas.SetLeft(rec, j * 20);
+                    Canvas.SetLeft(rec, j * sekunda);
 
                     if (i == 2)
                     {
-
+                        
                         Label lab = new Label
                         {
-                            FontSize = 12,
+                            
+                            FontSize = f_size,
                             Content = j.ToString(),
 
                         };
 
                         canvas.Children.Add(lab);
                         Canvas.SetTop(lab, -5);
-                        Canvas.SetLeft(lab, j * 20);
+                        Canvas.SetLeft(lab, j * sekunda);
                     }
-
+                    if (sekunda < 5) j += 9;
                 }
             }
         }
@@ -168,11 +189,10 @@ namespace SPD
                 }
 
                 sr.Close();
-                
+                dane.Close();
             }
             
-            if(dane!= null)
-                dane.Close();
+                
             
         }
 
@@ -209,6 +229,43 @@ namespace SPD
             //DanePlik temp = danePliks[0];
             int t_czas;
 
+            int[,] temp_czasy;
+            string numery = string.Empty;
+
+            switch (co)
+            {
+                case 0:
+                    {
+                        temp_czasy = (temp.czasy);
+                        xd.Text = temp.Czas(temp.czasy).ToString();
+                        break;
+                    }
+
+                case 1:
+                    {
+                        temp_czasy = (temp.JohnsonNaSztywno());
+                        numery = temp.bestOptJ;
+                        xd.Text = temp.Czas(temp.JohnsonNaSztywno()).ToString();
+                        break;
+                    }
+
+                case 2:
+                    {
+                        temp_czasy = (temp.prez_wy);
+                        numery = temp.bestOpt;
+                        xd.Text = temp.Czas(temp.prez_wy).ToString();
+                        break;
+                    }
+                default:
+                    {
+                        temp_czasy = (temp.czasy);
+                        xd.Text = temp.Czas(temp.czasy).ToString();
+                        break;
+                    }
+            }
+
+           
+
             int[] t_zwolnienia = new int[temp.maszyny];
             byte r, g, b;
 
@@ -221,55 +278,34 @@ namespace SPD
             {
                 t_czas = 0;
                 int mv = 0;
-                string numer = "";
+                string numer;
+                if (numery != string.Empty)
+                {
+                    numer = (numery[z] - 48).ToString();
+                }
+                else
+                {
+                    numer = (z + 1).ToString();
+                }
+                
+
                 r = (byte)rnd.Next(255);
                 g = (byte)rnd.Next(255);
                 b = (byte)rnd.Next(255);
 
+                
+
                 for (int i = 0; i < temp.maszyny; i++)
                 {
+                    t_czas = temp_czasy[z, i];
 
-                    switch (co)
-                    {
-                        case 0:
-                            {
-                                t_czas = (temp.czasy[z, i]);
-                                numer = (z+1).ToString();
-                                break;
-                            }
-
-                        case 1:
-                            {
-                                t_czas = (temp.JohnsonNaSztywno()[z, i]);
-                                numer = temp.bestOptJ[z].ToString();
-                                break;
-                            }
-
-                        case 2:
-                            {
-                                t_czas = (temp.prez_wy[z, i]);
-                                numer = temp.bestOpt[z].ToString();
-                                break;
-                            }
-                        default:
-                            {
-                                t_czas = (temp.czasy[z, i]);
-                                numer = (z + 1).ToString();
-                                break;
-                            }
-                    }
-                    
-                    
-                    
-                    
-
-                    int t_czas2 = t_czas * 20 ;
+                    int t_czas2 = t_czas * sekunda ;
 
                     Rectangle rec = new Rectangle()
                     {
                         Width = t_czas2,
                         Height = 40,
-                        Fill = new SolidColorBrush(Color.FromRgb(r, g, b)),
+                        Fill = new SolidColorBrush(Color.FromRgb(r,g,b)),
                         Stroke = Brushes.Black,
 
                     };
@@ -280,15 +316,15 @@ namespace SPD
                     if(i == 0)
                     {
                         
-                        Canvas.SetLeft(rec, 20 + t_zwolnienia[i]);
+                        Canvas.SetLeft(rec, sekunda + t_zwolnienia[i]);
                         
                     }
                     else
                     {
                         if(t_zwolnienia[i] >= t_zwolnienia[i-1])
-                            Canvas.SetLeft(rec, 20 + t_zwolnienia[i]);
+                            Canvas.SetLeft(rec, sekunda + t_zwolnienia[i]);
                         else
-                            Canvas.SetLeft(rec, 20 + t_zwolnienia[i-1]);
+                            Canvas.SetLeft(rec, sekunda + t_zwolnienia[i-1]);
 
 
                     }
@@ -308,13 +344,13 @@ namespace SPD
                     canvas.Children.Add(lab);
                     Canvas.SetTop(lab, 10 + mv);
                     if(i ==0)
-                        Canvas.SetLeft(lab, 10 + t_czas2/2 + t_zwolnienia[i]);
+                        Canvas.SetLeft(lab, sekunda/2 + t_czas2/2 + t_zwolnienia[i]);
                     else
                     {
                         if (t_zwolnienia[i] >= t_zwolnienia[i - 1])
-                            Canvas.SetLeft(lab, 10 + t_czas2 / 2 + t_zwolnienia[i]);
+                            Canvas.SetLeft(lab, sekunda/2 + t_czas2 / 2 + t_zwolnienia[i]);
                         else
-                            Canvas.SetLeft(lab, 10 + t_czas2 / 2 + t_zwolnienia[i-1]);
+                            Canvas.SetLeft(lab, sekunda/2 + t_czas2 / 2 + t_zwolnienia[i-1]);
                     }
 
 
@@ -334,7 +370,8 @@ namespace SPD
                     mv += 60;
                 }
             }
-            xd.Text = (t_zwolnienia[temp.maszyny - 1]/20).ToString();
+            //xd.Text = (t_zwolnienia[temp.maszyny - 1]/sekunda).ToString();
+            
         }
 
         private void combo1_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -415,7 +452,8 @@ namespace SPD
 
         private void okno_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(Math.Abs(okno.Width - width) > 100)
+            
+            if (Math.Abs(okno.Width - width) > 100)
             {
                 width = okno.Width;
                 Clear();
@@ -435,32 +473,47 @@ namespace SPD
             int max_time = 15;
             int indeks = 0;
 
-            if ((!File.Exists("scores.txt")))
-                using (FileStream fs = File.Create("score.txt")) //Creates Scores.txt
+
+            using (FileStream fs = File.Create("score.txt")) //Creates Scores.txt
+            {
+                StreamWriter sw = new StreamWriter(fs);
+                for (int h = 2; h <= max_zadan; h++)
                 {
-                    StreamWriter sw = new StreamWriter(fs);
-                    for (int h = 2; h <= max_zadan; h++)
+                    
+                    for (int i = 2; i <= max_maszyn; i++)
                     {
-                        sw.WriteLine("ta" + indeks);
-                        for (int i = 2; i <= max_maszyn; i++)
+                        if(indeks < 10 )
+                            sw.WriteLine("ta00" + indeks);
+                        else if(indeks < 100)
+                            sw.WriteLine("ta0" + indeks);
+                        else
+                            sw.WriteLine("ta" + indeks);
+
+                        sw.WriteLine(h + " " + i);
+                        for (int m = 0; m < h; m++)
                         {
-                            sw.WriteLine(h + " " + i);
-                            for (int m = 0; m < max_zadan; m++)
+
+                            for (int z = 0; z < i; z++)
                             {
-
-                                for (int z = 0; z < max_maszyn; z++)
-                                {
-                                    sw.WriteLine(rnd.Next(1,max_time) + " ");
-                                }
-
+                                if(z == 0)
+                                    sw.Write((rnd.Next(1, max_time)).ToString().PadLeft(2));
+                                else
+                                    sw.Write((rnd.Next(1, max_time)).ToString().PadLeft(3));
                             }
-                            indeks++;
+                            sw.WriteLine();
+                            
+
                         }
-                        
-                        
+                        indeks++;
+                        sw.WriteLine();
                     }
-                    sw.Close();
+
+
                 }
+                sw.Close();
+
+            }
+            MessageBox.Show("Dane zostały wygenerowane","Dane");
         }
     }
 
