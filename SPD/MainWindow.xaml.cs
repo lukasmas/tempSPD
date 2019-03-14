@@ -425,6 +425,43 @@ namespace SPD
             }
 
         }
+
+        private void Button_Click_Generuj(object sender, RoutedEventArgs e)
+        {
+            Random rnd = new Random();
+
+            int max_maszyn = 3;
+            int max_zadan = 5;
+            int max_time = 15;
+            int indeks = 0;
+
+            if ((!File.Exists("scores.txt")))
+                using (FileStream fs = File.Create("score.txt")) //Creates Scores.txt
+                {
+                    StreamWriter sw = new StreamWriter(fs);
+                    for (int h = 2; h <= max_zadan; h++)
+                    {
+                        sw.WriteLine("ta" + indeks);
+                        for (int i = 2; i <= max_maszyn; i++)
+                        {
+                            sw.WriteLine(h + " " + i);
+                            for (int m = 0; m < max_zadan; m++)
+                            {
+
+                                for (int z = 0; z < max_maszyn; z++)
+                                {
+                                    sw.WriteLine(rnd.Next(1,max_time) + " ");
+                                }
+
+                            }
+                            indeks++;
+                        }
+                        
+                        
+                    }
+                    sw.Close();
+                }
+        }
     }
 
         
